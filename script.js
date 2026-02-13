@@ -1,120 +1,168 @@
-class Timer {
-    constructor() {
-        this.timeLeft = 1500; // Default 25 mins in seconds
-        this.timerId = null;
-        this.isRunning = false;
-        this.currentMode = 'pomodoro'; // 'pomodoro', 'shortBreak', 'longBreak'
+const App = {
+    // Default Configuration
+    config: {
+        pomodoro: 25,
+        shortBreak: 5,
+        longBreak: 15,
+        sound: 'digital',
+        notifications: false
+    },
+    
+    state: {
+        timeLeft: 1500,
+        isRunning: false,
+        mode: 'pomodoro',
+        timerId: null
+    },
 
-        // DOM Elements
-        this.timeDisplay = document.getElementById('time-display');
-        this.startBtn = document.getElementById('start-btn');
-        this.modeBtns = document.querySelectorAll('.mode-btn');
-        this.alarmSound = document.getElementById('alarm-sound');
-        
-        // Configuration for modes (in seconds)
-        this.modes = {
-            pomodoro: 25 * 60,
-            shortBreak: 5 * 60,
-            longBreak: 15 * 60
-        };
-
-        this.init();
-    }
+    dom: {},
 
     init() {
-        // Event Listeners
-        document.getElementById('start-btn').addEventListener('click', () => this.toggleTimer());
-        document.getElementById('reset-btn').addEventListener('click', () => this.resetTimer());
-        
-        this.modeBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => this.switchMode(e.target.dataset.mode));
-        });
-    }
+        this.cacheDOM();
+        this.loadConfig();
+        this.bindEvents();
+        this.resetTimer(); // Apply initial state
+    },
 
-    toggleTimer() {
-        if (this.isRunning) {
-            this.pauseTimer();
-        } else {
-            this.startTimer();
-        }
-    }
-
-    startTimer() {
-        if (this.timerId) return; // Prevent double intervals
-        
-        this.isRunning = true;
-        this.startBtn.textContent = "Pause";
-        this.startBtn.style.backgroundColor = "var(--card-color)"; // Dim button
-        this.startBtn.style.border = "2px solid var(--text-secondary)";
-
-        this.timerId = setInterval(() => {
-            this.timeLeft--;
-            this.updateDisplay();
-            this.updateTitle();
-
-            if (this.timeLeft === 0) {
-                this.completeTimer();
+    cacheDOM() {
+        this.dom = {
+            time: document.getElementById('time'),
+            status: document.getElementById('status-label'),
+            startBtn: document.getElementById('main-btn'),
+            audio: document.getElementById('audio-player'),
+            modal: document.getElementById('settings-modal'),
+            inputs: {
+                pomodoro: document.getElementById('setting-focus'),
+                short: document.getElementById('setting-short'),
+                long: document.getElementById('setting-long'),
+                sound: document.getElementById('setting-sound'),
+                notif: document.getElementById('setting-notif')
             }
-        }, 1000);
-    }
+        };
+    },
 
-    pauseTimer() {
-        this.isRunning = false;
-        clearInterval(this.timerId);
-        this.timerId = null;
-        this.startBtn.textContent = "Start";
-        this.startBtn.style.backgroundColor = "var(--accent-color)";
-        this.startBtn.style.border = "none";
-        document.title = "Focus Timer"; // Reset title
-    }
+    bindEvents() {
+        // Main Actions
+        this.dom.startBtn.addEventListener('click', () => this.toggle());
+        document.getElementById('reset-btn').addEventListener('click', () => this.resetTimer());
+
+        // Tabs (Pills)
+        document.querySelectorAll('.pill').forEach(btn => {
+            btn.addEventListener('click', (e) => this.setMode(e.target.dataset.mode));
+        });
+
+        // Settings Modal
+        document.getElementById('settings-trigger').addEventListener('click', () => {
+            this.dom.modal.classList.remove('hidden');
+        });
+
+        this.dom.modal.querySelector('.close-btn').addEventListener('click', () => {
+            this.dom.modal.classList.add('hidden');
+        });
+        
+        // Close modal on click outside
+        this.dom.modal.addEventListener('click', (e) => {
+            if(e.target === this.dom.modal) this.dom.modal.classList.add('hidden');
+        });
+
+        // Save Settings
+        document.getElementById('save-settings').addEventListener('click', () => {
+            this.saveConfig();
+            this.dom.modal.classList.add('hidden');
+            this.resetTimer();
+        });
+    },
+
+    loadConfig() {
+        const saved = localStorage.getItem('orbitConfig');
+        if (saved) this.config = JSON.parse(saved);
+
+        // Populate inputs
+        this.dom.inputs.pomodoro.value = this.config.pomodoro;
+        this.dom.inputs.short.value = this.config.shortBreak;
+        this.dom.inputs.long.value = this.config.longBreak;
+        this.dom.inputs.sound.value = this.config.sound;
+        this.dom.inputs.notif.checked = this.config.notifications;
+    },
+
+    saveConfig() {
+        this.config.pomodoro = parseInt(this.dom.inputs.pomodoro.value) || 25;
+        this.config.shortBreak = parseInt(this.dom.inputs.short.value) || 5;
+        this.config.longBreak = parseInt(this.dom.inputs.long.value) || 15;
+        this.config.sound = this.dom.inputs.sound.value;
+        this.config.notifications = this.dom.inputs.notif.checked;
+        
+        localStorage.setItem('orbitConfig', JSON.stringify(this.config));
+        
+        if (this.config.notifications) Notification.requestPermission();
+    },
+
+    setMode(mode) {
+        this.state.mode = mode;
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+        this.resetTimer();
+    },
+
+    toggle() {
+        if (this.state.isRunning) {
+            this.pause();
+        } else {
+            this.start();
+        }
+    },
+
+    start() {
+        if (this.state.timerId) return;
+        this.state.isRunning = true;
+        this.dom.startBtn.textContent = 'PAUSE';
+        this.dom.startBtn.style.opacity = '0.8';
+
+        this.state.timerId = setInterval(() => {
+            this.state.timeLeft--;
+            this.render();
+            if (this.state.timeLeft <= 0) this.complete();
+        }, 1000);
+    },
+
+    pause() {
+        this.state.isRunning = false;
+        clearInterval(this.state.timerId);
+        this.state.timerId = null;
+        this.dom.startBtn.textContent = 'RESUME';
+        this.dom.startBtn.style.opacity = '1';
+    },
 
     resetTimer() {
-        this.pauseTimer();
-        this.timeLeft = this.modes[this.currentMode];
-        this.updateDisplay();
-    }
+        this.pause();
+        this.dom.startBtn.textContent = 'START';
+        this.state.timeLeft = this.config[this.state.mode] * 60;
+        this.dom.status.textContent = 'READY';
+        this.render();
+    },
 
-    switchMode(mode) {
-        this.currentMode = mode;
-        this.timeLeft = this.modes[mode];
-        
-        // Update UI Tabs
-        this.modeBtns.forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+    render() {
+        const m = Math.floor(this.state.timeLeft / 60);
+        const s = this.state.timeLeft % 60;
+        const fmt = `${m}:${s < 10 ? '0' : ''}${s}`;
+        this.dom.time.textContent = fmt;
+        document.title = `${fmt} - Orbit`;
+    },
 
-        // Change Theme based on mode (Focus vs Break)
-        if (mode === 'pomodoro') {
-            document.body.classList.remove('break-mode');
-        } else {
-            document.body.classList.add('break-mode');
+    complete() {
+        this.pause();
+        this.dom.status.textContent = 'COMPLETED';
+        this.playSound();
+        if (this.config.notifications) {
+            new Notification("Orbit Focus", { body: "Timer Complete", icon: 'favicon.ico' });
         }
+    },
 
-        this.resetTimer();
+    playSound() {
+        this.dom.audio.src = `assets/alarm-${this.config.sound}.mp3`;
+        this.dom.audio.play().catch(() => {});
     }
+};
 
-    updateDisplay() {
-        const minutes = Math.floor(this.timeLeft / 60);
-        const seconds = this.timeLeft % 60;
-        const displayString = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        
-        this.timeDisplay.textContent = displayString;
-    }
-
-    updateTitle() {
-        const minutes = Math.floor(this.timeLeft / 60);
-        const seconds = this.timeLeft % 60;
-        const displayString = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        document.title = `(${displayString}) - ${this.currentMode === 'pomodoro' ? 'Focus' : 'Break'}`;
-    }
-
-    completeTimer() {
-        this.pauseTimer();
-        if (this.alarmSound) this.alarmSound.play();
-        alert("Time is up! Take a breather.");
-        
-        // Auto-switch logic could go here
-    }
-}
-
-// Initialize the App
-const myTimer = new Timer();
+// Start
+document.addEventListener('DOMContentLoaded', () => App.init());

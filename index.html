@@ -2,36 +2,90 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Focus Timer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⌛ FOCUS-TIMER </title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
 </head>
 <body>
 
-    <main class="container">
-        <header>
-            <h1>Focus Flow</h1>
-            <div class="mode-selector">
-                <button data-mode="pomodoro" class="mode-btn active">Focus</button>
-                <button data-mode="shortBreak" class="mode-btn">Short Break</button>
-                <button data-mode="longBreak" class="mode-btn">Long Break</button>
+    <nav class="top-bar">
+        <div class="brand-logo">FOCUS</div>
+        <button id="settings-trigger" class="icon-btn" aria-label="Settings">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </button>
+    </nav>
+
+    <main class="timer-container">
+        
+        <div class="timer-wrapper">
+            <div class="time-ring">
+                <div class="time-display" id="time">25:00</div>
+                <div class="status-label" id="status-label">READY</div>
             </div>
-        </header>
+        </div>
 
-        <section class="timer-display">
-            <div class="time" id="time-display">25:00</div>
-            <p class="status-text" id="status-text">Ready to work?</p>
-        </section>
+        <div class="mode-pills">
+            <button class="pill active" data-mode="pomodoro">Focus</button>
+            <button class="pill" data-mode="shortBreak">Short</button>
+            <button class="pill" data-mode="longBreak">Long</button>
+        </div>
 
-        <section class="controls">
-            <button id="start-btn" class="main-btn">Start</button>
-            <button id="reset-btn" class="secondary-btn">Reset</button>
-        </section>
+        <div class="controls">
+            <button id="main-btn" class="primary-btn">Start</button>
+            <button id="reset-btn" class="secondary-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+        </div>
     </main>
 
-    <audio id="alarm-sound" src="beep.mp3"></audio>
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configuration</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            
+            <div class="setting-scroll">
+                <div class="setting-group">
+                    <label>Focus (min)</label>
+                    <input type="number" id="setting-focus" value="25">
+                </div>
+                
+                <div class="setting-group">
+                    <label>Short Break (min)</label>
+                    <input type="number" id="setting-short" value="5">
+                </div>
+                
+                <div class="setting-group">
+                    <label>Long Break (min)</label>
+                    <input type="number" id="setting-long" value="15">
+                </div>
+                
+                <div class="setting-group">
+                    <label>Sound</label>
+                    <select id="setting-sound">
+                        <option value="digital">Digital</option>
+                        <option value="bell">Bell</option>
+                        <option value="bird">Nature</option>
+                    </select>
+                </div>
+
+                <div class="setting-row">
+                    <label>Notifications</label>
+                    <input type="checkbox" id="setting-notif" class="checkbox-custom">
+                </div>
+            </div>
+            
+            <button id="save-settings" class="full-btn">Save Changes</button>
+        </div>
+    </div>
+
+    <audio id="audio-player"></audio>
 
 </body>
 </html>
