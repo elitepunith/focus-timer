@@ -3,71 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>⌛ FOCUS-TIMER </title>
+
+    <!-- SEO & Social Sharing Meta Tags -->
+    <meta name="description" content="Focus Timer — A Pomodoro-style productivity timer with customizable focus, short break, and long break sessions. Stay focused and get things done.">
+    <meta name="keywords" content="pomodoro, focus timer, productivity, time management, study timer">
+    <meta name="author" content="elitepunith">
+    <meta name="theme-color" content="#050505">
+
+    <!-- Open Graph (Facebook, LinkedIn, Discord) -->
+    <meta property="og:title" content="⌛ Focus Timer — Stay Focused, Get It Done">
+    <meta property="og:description" content="A sleek Pomodoro-style productivity timer with a cyberpunk UI. Customizable sessions, sound alerts, and browser notifications.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://github.com/elitepunith/focus-timer">
+    <meta property="og:image" content="https://repository-images.githubusercontent.com/1157242852/focus-timer-preview.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="⌛ Focus Timer — Stay Focused, Get It Done">
+    <meta name="twitter:description" content="A sleek Pomodoro-style productivity timer with customizable sessions, sound alerts, and browser notifications.">
+
+    <title>⌛ Focus Timer</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
 </head>
 <body>
 
-    <nav class="top-bar">
+    <nav class="top-bar" role="navigation" aria-label="Main navigation">
         <div class="brand-logo">FOCUS</div>
-        <button id="settings-trigger" class="icon-btn" aria-label="Settings">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button id="settings-trigger" class="icon-btn" aria-label="Open settings">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
         </button>
     </nav>
 
-    <main class="timer-container">
-        
+    <main class="timer-container" role="main">
+
+        <!-- SVG Circular Progress Ring -->
         <div class="timer-wrapper">
+            <svg class="progress-ring" width="300" height="300" viewBox="0 0 300 300" aria-hidden="true">
+                <circle
+                    class="progress-ring__bg"
+                    cx="150" cy="150" r="140"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.05)"
+                    stroke-width="6"
+                />
+                <circle
+                    id="progress-circle"
+                    class="progress-ring__circle"
+                    cx="150" cy="150" r="140"
+                    fill="none"
+                    stroke="var(--accent)"
+                    stroke-width="6"
+                    stroke-linecap="round"
+                    stroke-dasharray="879.65"
+                    stroke-dashoffset="0"
+                    transform="rotate(-90 150 150)"
+                />
+            </svg>
             <div class="time-ring">
-                <div class="time-display" id="time">25:00</div>
-                <div class="status-label" id="status-label">READY</div>
+                <div class="time-display" id="time" role="timer" aria-live="polite" aria-atomic="true">25:00</div>
+                <div class="status-label" id="status-label" aria-live="polite">READY</div>
             </div>
         </div>
 
-        <div class="mode-pills">
-            <button class="pill active" data-mode="pomodoro">Focus</button>
-            <button class="pill" data-mode="shortBreak">Short</button>
-            <button class="pill" data-mode="longBreak">Long</button>
+        <div class="mode-pills" role="tablist" aria-label="Timer modes">
+            <button class="pill active" data-mode="pomodoro" role="tab" aria-selected="true" aria-label="Focus mode — 25 minutes">Focus</button>
+            <button class="pill" data-mode="shortBreak" role="tab" aria-selected="false" aria-label="Short break — 5 minutes">Short</button>
+            <button class="pill" data-mode="longBreak" role="tab" aria-selected="false" aria-label="Long break — 15 minutes">Long</button>
         </div>
 
         <div class="controls">
-            <button id="main-btn" class="primary-btn">Start</button>
-            <button id="reset-btn" class="secondary-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <button id="main-btn" class="primary-btn" aria-label="Start timer">Start</button>
+            <button id="reset-btn" class="secondary-btn" aria-label="Reset timer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             </button>
         </div>
     </main>
 
-    <div id="settings-modal" class="modal hidden">
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Configuration</h2>
-                <button class="close-btn">&times;</button>
+                <h2 id="settings-title">Configuration</h2>
+                <button class="close-btn" aria-label="Close settings">&times;</button>
             </div>
-            
+
             <div class="setting-scroll">
                 <div class="setting-group">
-                    <label>Focus (min)</label>
-                    <input type="number" id="setting-focus" value="25">
+                    <label for="setting-focus">Focus (min)</label>
+                    <input type="number" id="setting-focus" value="25" min="1" max="120" step="1">
                 </div>
-                
+
                 <div class="setting-group">
-                    <label>Short Break (min)</label>
-                    <input type="number" id="setting-short" value="5">
+                    <label for="setting-short">Short Break (min)</label>
+                    <input type="number" id="setting-short" value="5" min="1" max="60" step="1">
                 </div>
-                
+
                 <div class="setting-group">
-                    <label>Long Break (min)</label>
-                    <input type="number" id="setting-long" value="15">
+                    <label for="setting-long">Long Break (min)</label>
+                    <input type="number" id="setting-long" value="15" min="1" max="60" step="1">
                 </div>
-                
+
                 <div class="setting-group">
-                    <label>Sound</label>
+                    <label for="setting-sound">Sound</label>
                     <select id="setting-sound">
                         <option value="digital">Digital</option>
                         <option value="bell">Bell</option>
@@ -76,16 +118,27 @@
                 </div>
 
                 <div class="setting-row">
-                    <label>Notifications</label>
+                    <label for="setting-notif">Notifications</label>
                     <input type="checkbox" id="setting-notif" class="checkbox-custom">
                 </div>
             </div>
-            
+
             <button id="save-settings" class="full-btn">Save Changes</button>
         </div>
     </div>
 
-    <audio id="audio-player"></audio>
+    <audio id="audio-player" preload="none"></audio>
+
+    <!-- Noscript fallback -->
+    <noscript>
+        <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#050505;color:#00ff9d;font-family:monospace;text-align:center;padding:2rem;">
+            <div>
+                <h1 style="margin-bottom:1rem;">⌛ Focus Timer</h1>
+                <p style="color:#fff;">JavaScript is required to run Focus Timer.</p>
+                <p style="color:#666;margin-top:0.5rem;">Please enable JavaScript in your browser settings and reload the page.</p>
+            </div>
+        </div>
+    </noscript>
 
 </body>
 </html>
