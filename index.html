@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Timer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+
+    <main class="container">
+        <header>
+            <h1>Focus Flow</h1>
+            <div class="mode-selector">
+                <button data-mode="pomodoro" class="mode-btn active">Focus</button>
+                <button data-mode="shortBreak" class="mode-btn">Short Break</button>
+                <button data-mode="longBreak" class="mode-btn">Long Break</button>
+            </div>
+        </header>
+
+        <section class="timer-display">
+            <div class="time" id="time-display">25:00</div>
+            <p class="status-text" id="status-text">Ready to work?</p>
+        </section>
+
+        <section class="controls">
+            <button id="start-btn" class="main-btn">Start</button>
+            <button id="reset-btn" class="secondary-btn">Reset</button>
+        </section>
+    </main>
+
+    <audio id="alarm-sound" src="beep.mp3"></audio>
+
+</body>
+</html>
