@@ -2,10 +2,13 @@
 
 A minimal, Pomodoro-style productivity timer built with vanilla HTML, CSS, and JavaScript. Features a cyberpunk-themed dark UI with a circular SVG progress ring, smooth mode-switch animations, and drift-free timing powered by requestAnimationFrame.
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000?style=for-the-badge&logo=vercel&logoColor=white)](https://focus-timer-ivory-delta.vercel.app)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![License](https://img.shields.io/badge/License-MIT-00ff9d?style=for-the-badge)
+
+**Live Demo:** https://focus-timer-ivory-delta.vercel.app
 
 ---
 
@@ -29,6 +32,12 @@ A minimal, Pomodoro-style productivity timer built with vanilla HTML, CSS, and J
 ---
 
 ## Getting Started
+
+### Option 1 -- Use the live app
+
+Visit https://focus-timer-ivory-delta.vercel.app -- no install needed.
+
+### Option 2 -- Run locally
 
 ```bash
 git clone https://github.com/elitepunith/focus-timer.git
@@ -96,6 +105,19 @@ Click the gear icon in the top-right corner to open settings:
 | Notifications | Off | On / Off |
 
 All values are validated and clamped within their allowed ranges on save.
+
+---
+
+## Deployment
+
+This project is deployed on Vercel as a static site.
+
+To deploy your own:
+
+1. Push the repository to GitHub
+2. Import the repository on vercel.com
+3. Vercel auto-detects it as a static site -- no build step required
+4. Your app will be live at your-project.vercel.app
 
 ---
 
