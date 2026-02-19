@@ -4,25 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <!-- SEO & Social Sharing Meta Tags -->
     <meta name="description" content="Focus Timer — A Pomodoro-style productivity timer with customizable focus, short break, and long break sessions. Stay focused and get things done.">
     <meta name="keywords" content="pomodoro, focus timer, productivity, time management, study timer">
     <meta name="author" content="elitepunith">
     <meta name="theme-color" content="#050505">
 
-    <!-- Open Graph (Facebook, LinkedIn, Discord) -->
     <meta property="og:title" content="⌛ Focus Timer — Stay Focused, Get It Done">
     <meta property="og:description" content="A sleek Pomodoro-style productivity timer with a cyberpunk UI. Customizable sessions, sound alerts, and browser notifications.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://focus-timer-ivory-delta.vercel.app">
     <meta property="og:image" content="https://repository-images.githubusercontent.com/1157242852/focus-timer-preview.png">
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="⌛ Focus Timer — Stay Focused, Get It Done">
     <meta name="twitter:description" content="A sleek Pomodoro-style productivity timer with customizable sessions, sound alerts, and browser notifications.">
 
     <title>⌛ Focus Timer</title>
+    <link rel="icon" id="dynamic-favicon" href="favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
@@ -31,17 +29,27 @@
 
     <nav class="top-bar" role="navigation" aria-label="Main navigation">
         <div class="brand-logo">FOCUS</div>
-        <button id="settings-trigger" class="icon-btn" aria-label="Open settings">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-        </button>
+        <div class="nav-actions">
+            <button id="theme-toggle" class="icon-btn" aria-label="Switch theme" title="Switch theme (T)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+            </button>
+            <button id="settings-trigger" class="icon-btn" aria-label="Open settings" title="Settings (S)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+        </div>
     </nav>
 
     <main class="timer-container" role="main">
 
-        <!-- SVG Circular Progress Ring -->
+        <div class="task-label-wrapper">
+            <input type="text" id="task-label" class="task-input" placeholder="what are you working on?" maxlength="50" autocomplete="off" spellcheck="false">
+        </div>
+
         <div class="timer-wrapper">
             <svg class="progress-ring" width="300" height="300" viewBox="0 0 300 300" aria-hidden="true">
                 <circle
@@ -70,6 +78,13 @@
             </div>
         </div>
 
+        <div class="session-tracker" id="session-tracker">
+            <span class="dot filled"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+
         <div class="mode-pills" role="tablist" aria-label="Timer modes">
             <button class="pill active" data-mode="pomodoro" role="tab" aria-selected="true" aria-label="Focus mode — 25 minutes">Focus</button>
             <button class="pill" data-mode="shortBreak" role="tab" aria-selected="false" aria-label="Short break — 5 minutes">Short</button>
@@ -82,9 +97,12 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             </button>
         </div>
+
+        <div class="shortcut-hint" id="shortcut-hint">
+            <span>Space</span> play/pause &nbsp; <span>R</span> reset &nbsp; <span>T</span> theme &nbsp; <span>S</span> settings
+        </div>
     </main>
 
-    <!-- Settings Modal -->
     <div id="settings-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
         <div class="modal-content">
             <div class="modal-header">
@@ -117,9 +135,25 @@
                     </select>
                 </div>
 
+                <div class="setting-group">
+                    <label for="setting-theme">Theme</label>
+                    <select id="setting-theme">
+                        <option value="cyberpunk">Cyberpunk Green</option>
+                        <option value="neon-blue">Neon Blue</option>
+                        <option value="retro-orange">Retro Orange</option>
+                        <option value="minimal-light">Minimal Light</option>
+                        <option value="purple-haze">Purple Haze</option>
+                    </select>
+                </div>
+
                 <div class="setting-row">
                     <label for="setting-notif">Notifications</label>
                     <input type="checkbox" id="setting-notif" class="checkbox-custom">
+                </div>
+
+                <div class="setting-row">
+                    <label for="setting-auto-break">Auto-start breaks</label>
+                    <input type="checkbox" id="setting-auto-break" class="checkbox-custom">
                 </div>
             </div>
 
@@ -129,7 +163,8 @@
 
     <audio id="audio-player" preload="none"></audio>
 
-    <!-- Noscript fallback -->
+    <canvas id="favicon-canvas" width="32" height="32" style="display:none;"></canvas>
+
     <noscript>
         <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#050505;color:#00ff9d;font-family:monospace;text-align:center;padding:2rem;">
             <div>
