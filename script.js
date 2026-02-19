@@ -40,8 +40,6 @@ class FocusTimer {
         this._faviconCtx = null;
     }
 
-    // ─── LIFECYCLE ───────────────────────────────────────────
-
     init() {
         this._cacheDOM();
         this._loadConfig();
@@ -51,8 +49,6 @@ class FocusTimer {
         this._renderSessionDots();
         this.reset();
     }
-
-    // ─── DOM CACHE ───────────────────────────────────────────
 
     _cacheDOM() {
         this.dom = {
@@ -84,8 +80,6 @@ class FocusTimer {
         this.circumference = 2 * Math.PI * radius;
         this.dom.progressCircle.style.strokeDasharray = `${this.circumference}`;
     }
-
-    // ─── EVENTS ──────────────────────────────────────────────
 
     _bindEvents() {
         this.dom.startBtn.addEventListener('click', () => this.toggle());
@@ -121,18 +115,34 @@ class FocusTimer {
             this.state.taskLabel = this.dom.taskInput.value.trim();
         });
 
+        // let the user press enter or escape to leave the task input
+        this.dom.taskInput.addEventListener('keydown', (e) => {
+            if (e.code === 'Enter' || e.code === 'Escape') {
+                e.preventDefault();
+                this.dom.taskInput.blur();
+            }
+        });
+
         document.addEventListener('keydown', (e) => this._handleKeyboard(e));
     }
 
     _handleKeyboard(e) {
+        // escape always closes the settings panel regardless of context
         if (e.code === 'Escape' && !this.dom.modal.classList.contains('hidden')) {
             this.dom.modal.classList.add('hidden');
             return;
         }
 
+        // don't hijack keys while the settings panel is open
         const modalOpen = !this.dom.modal.classList.contains('hidden');
-        const typing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
-        if (modalOpen || typing) return;
+        if (modalOpen) return;
+
+        // if the user is inside the task input let them type normally
+        if (document.activeElement === this.dom.taskInput) return;
+
+        // block shortcuts while interacting with any other input or select
+        const tag = document.activeElement.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
 
         switch (e.code) {
             case 'Space':
@@ -160,8 +170,6 @@ class FocusTimer {
         }
     }
 
-    // ─── CONFIGURATION ───────────────────────────────────────
-
     _loadConfig() {
         const raw = localStorage.getItem(FocusTimer.STORAGE_KEY);
         if (raw) {
@@ -181,13 +189,12 @@ class FocusTimer {
         this.dom.inputs.notif.checked   = this.config.notifications;
         this.dom.inputs.autoBreak.checked = this.config.autoBreak;
 
-        // restore session count if it was saved
         const sessionData = localStorage.getItem('focusTimerSessions');
         if (sessionData) {
             try {
                 const s = JSON.parse(sessionData);
                 this.state.sessionsCompleted = s.count || 0;
-            } catch (_) { /* nope */ }
+            } catch (_) {}
         }
     }
 
@@ -205,7 +212,6 @@ class FocusTimer {
         this.dom.inputs.long.value     = this.config.longBreak;
 
         localStorage.setItem(FocusTimer.STORAGE_KEY, JSON.stringify(this.config));
-
         this._applyTheme(this.config.theme);
 
         if (this.config.notifications && 'Notification' in window) {
@@ -219,8 +225,6 @@ class FocusTimer {
         if (num > limits.max) return limits.max;
         return num;
     }
-
-    // ─── THEMES ──────────────────────────────────────────────
 
     _applyTheme(theme) {
         if (theme === 'cyberpunk') {
@@ -250,8 +254,6 @@ class FocusTimer {
         localStorage.setItem(FocusTimer.STORAGE_KEY, JSON.stringify(this.config));
     }
 
-    // ─── MODE SWITCHING ──────────────────────────────────────
-
     setMode(mode) {
         if (this.state.mode === mode) return;
 
@@ -273,8 +275,6 @@ class FocusTimer {
 
         this.reset();
     }
-
-    // ─── TIMER CONTROLS ──────────────────────────────────────
 
     toggle() {
         this.state.isRunning ? this.pause() : this.start();
@@ -348,8 +348,6 @@ class FocusTimer {
         this._updateFavicon();
     }
 
-    // ─── RENDERING ───────────────────────────────────────────
-
     _render() {
         const minutes = Math.floor(this.state.timeLeft / 60);
         const seconds = this.state.timeLeft % 60;
@@ -369,8 +367,6 @@ class FocusTimer {
         const offset = this.circumference * (1 - progress);
         this.dom.progressCircle.style.strokeDashoffset = `${offset}`;
     }
-
-    // ─── SESSION DOTS (LONG BREAK CYCLE) ─────────────────────
 
     _renderSessionDots() {
         const tracker = this.dom.sessionTracker;
@@ -392,8 +388,6 @@ class FocusTimer {
         this._renderSessionDots();
     }
 
-    // ─── FAVICON TIMER ───────────────────────────────────────
-
     _setupFaviconCanvas() {
         this._faviconCanvas = document.getElementById('favicon-canvas');
         this._faviconCtx = this._faviconCanvas.getContext('2d');
@@ -407,13 +401,11 @@ class FocusTimer {
 
         ctx.clearRect(0, 0, size, size);
 
-        // background circle
         ctx.beginPath();
         ctx.arc(16, 16, 15, 0, 2 * Math.PI);
         ctx.fillStyle = '#111';
         ctx.fill();
 
-        // progress arc
         const progress = this.state.timeLeft / this.state.totalTime;
         const startAngle = -Math.PI / 2;
         const endAngle = startAngle + (2 * Math.PI * progress);
@@ -424,7 +416,6 @@ class FocusTimer {
         ctx.lineWidth = 3;
         ctx.stroke();
 
-        // time text
         const minutes = Math.floor(this.state.timeLeft / 60);
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 14px sans-serif';
@@ -432,14 +423,11 @@ class FocusTimer {
         ctx.textBaseline = 'middle';
         ctx.fillText(minutes.toString(), 16, 17);
 
-        // swap the favicon
         const link = document.getElementById('dynamic-favicon');
         if (link) {
             link.href = this._faviconCanvas.toDataURL('image/png');
         }
     }
-
-    // ─── COMPLETION ──────────────────────────────────────────
 
     _complete() {
         this.pause();
@@ -492,10 +480,10 @@ class FocusTimer {
             longBreak:  'Long break'
         };
 
-        let body = `${modeLabels[this.state.mode]} complete! Nice work. 🎉`;
+        let body = `${modeLabels[this.state.mode]} complete! Nice work.`;
 
         if (this.state.taskLabel) {
-            body = `${modeLabels[this.state.mode]} complete for "${this.state.taskLabel}" 🎉`;
+            body = `${modeLabels[this.state.mode]} complete for "${this.state.taskLabel}"`;
         }
 
         if (this.state.mode === 'pomodoro' && (this.state.sessionsCompleted % 4) === 0) {
@@ -510,8 +498,6 @@ class FocusTimer {
         this.dom.audio.play().catch(() => {});
     }
 }
-
-// ─── BOOTSTRAP ───────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
     const app = new FocusTimer();
