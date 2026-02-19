@@ -1,7 +1,7 @@
 /* ================================================================
    Focus Timer — Stylesheet
    Author:  elitepunith
-   Version: 2.0.0
+   Version: 3.0.0
    ================================================================ */
 
 :root {
@@ -9,17 +9,50 @@
     --card: #111;
     --text: #fff;
     --text-dim: #666;
-
-    /* Cyberpunk Green */
     --accent: #00ff9d;
     --accent-dim: rgba(0, 255, 157, 0.15);
     --glow: 0 0 20px rgba(0, 255, 157, 0.4);
-
+    --modal-bg: #1a1a1a;
+    --border: #333;
     --font-ui: 'Inter', sans-serif;
     --font-code: 'JetBrains Mono', monospace;
 }
 
-/* --- Reset --- */
+/* ─── Theme: Neon Blue ─── */
+[data-theme="neon-blue"] {
+    --accent: #00d4ff;
+    --accent-dim: rgba(0, 212, 255, 0.15);
+    --glow: 0 0 20px rgba(0, 212, 255, 0.4);
+}
+
+/* ─── Theme: Retro Orange ─── */
+[data-theme="retro-orange"] {
+    --accent: #ff6b2b;
+    --accent-dim: rgba(255, 107, 43, 0.15);
+    --glow: 0 0 20px rgba(255, 107, 43, 0.4);
+}
+
+/* ─── Theme: Minimal Light ─── */
+[data-theme="minimal-light"] {
+    --bg: #f5f5f5;
+    --card: #fff;
+    --text: #1a1a1a;
+    --text-dim: #888;
+    --accent: #2d2d2d;
+    --accent-dim: rgba(45, 45, 45, 0.1);
+    --glow: 0 0 15px rgba(0, 0, 0, 0.15);
+    --modal-bg: #fff;
+    --border: #ddd;
+}
+
+/* ─── Theme: Purple Haze ─── */
+[data-theme="purple-haze"] {
+    --accent: #bf5af2;
+    --accent-dim: rgba(191, 90, 242, 0.15);
+    --glow: 0 0 20px rgba(191, 90, 242, 0.4);
+}
+
+/* ─── Reset ─── */
 *,
 *::before,
 *::after {
@@ -34,16 +67,18 @@ body {
     color: var(--text);
     font-family: var(--font-ui);
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    transition: background 0.4s ease, color 0.4s ease;
 }
 
 /* ================================================================
    Header
    ================================================================ */
 .top-bar {
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -52,13 +87,19 @@ body {
     z-index: 10;
 }
 
+.nav-actions {
+    display: flex;
+    gap: 4px;
+}
+
 .brand-logo {
     font-family: var(--font-code);
     font-weight: 700;
     font-size: 1.2rem;
     letter-spacing: 2px;
     color: var(--accent);
-    text-shadow: 0 0 10px rgba(0,255,157,0.3);
+    text-shadow: 0 0 10px currentColor;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .icon-btn {
@@ -67,12 +108,17 @@ body {
     color: var(--text);
     cursor: pointer;
     padding: 10px;
-    transition: transform 0.25s ease, color 0.25s ease;
+    border-radius: 8px;
+    transition: transform 0.25s ease, color 0.25s ease, background 0.25s ease;
 }
 
 .icon-btn:hover {
     transform: rotate(60deg);
     color: var(--accent);
+}
+
+.icon-btn:active {
+    transform: rotate(60deg) scale(0.9);
 }
 
 /* ================================================================
@@ -86,16 +132,54 @@ body {
     align-items: center;
     width: 100%;
     padding: 0 20px;
+    gap: 0;
+}
+
+/* ================================================================
+   Task Label Input
+   ================================================================ */
+.task-label-wrapper {
+    margin-bottom: 1.5rem;
+    width: 100%;
+    max-width: 300px;
+}
+
+.task-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    padding: 8px 4px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    transition: border-color 0.3s ease;
+}
+
+.task-input::placeholder {
+    color: var(--text-dim);
+    font-style: italic;
+}
+
+.task-input:focus {
+    outline: none;
+    border-bottom-color: var(--accent);
+}
+
+[data-theme="minimal-light"] .task-input {
+    border-bottom-color: rgba(0,0,0,0.15);
 }
 
 /* ================================================================
    Timer Display + SVG Progress Ring
    ================================================================ */
 .timer-wrapper {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     position: relative;
-    width: 280px;
-    height: 280px;
+    width: 240px;
+    height: 240px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -108,10 +192,11 @@ body {
     width: 100%;
     height: 100%;
     filter: drop-shadow(0 0 6px rgba(0, 255, 157, 0.25));
+    transition: filter 0.4s ease;
 }
 
 .progress-ring__circle {
-    transition: stroke-dashoffset 0.4s ease;
+    transition: stroke-dashoffset 0.4s ease, stroke 0.4s ease;
 }
 
 .time-ring {
@@ -122,34 +207,98 @@ body {
 
 .time-display {
     font-family: var(--font-code);
-    font-size: 3.8rem;
+    font-size: 3.2rem;
     font-weight: 700;
     color: var(--text);
     line-height: 1;
     letter-spacing: -2px;
     text-shadow: 0 0 15px rgba(255,255,255,0.1);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, color 0.4s ease;
 }
 
 .status-label {
     text-align: center;
     color: var(--accent);
     font-family: var(--font-code);
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     letter-spacing: 3px;
-    margin-top: 0.5rem;
+    margin-top: 0.4rem;
     text-transform: uppercase;
     transition: opacity 0.3s ease, color 0.3s ease;
 }
 
-/* Tablet & Desktop */
+/* ================================================================
+   Session Tracker Dots (Long Break Cycle)
+   ================================================================ */
+.session-tracker {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.session-tracker .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease;
+}
+
+.session-tracker .dot.filled {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    transform: scale(1.15);
+}
+
+[data-theme="minimal-light"] .session-tracker .dot {
+    background: rgba(0,0,0,0.1);
+}
+
+[data-theme="minimal-light"] .session-tracker .dot.filled {
+    background: var(--accent);
+    box-shadow: none;
+}
+
+/* ================================================================
+   Responsive Breakpoints
+   ================================================================ */
 @media (min-width: 768px) {
     .timer-wrapper {
-        width: 360px;
-        height: 360px;
+        width: 340px;
+        height: 340px;
     }
-    .time-display { font-size: 5rem; }
-    .status-label { font-size: 0.9rem; }
+    .time-display { font-size: 4.6rem; }
+    .status-label { font-size: 0.85rem; }
+    .task-label-wrapper { max-width: 360px; }
+    .top-bar { padding: 1.5rem 2rem; }
+}
+
+@media (min-width: 1024px) {
+    .timer-wrapper {
+        width: 380px;
+        height: 380px;
+    }
+    .time-display { font-size: 5.2rem; }
+}
+
+@media (max-width: 380px) {
+    .timer-wrapper {
+        width: 200px;
+        height: 200px;
+    }
+    .time-display { font-size: 2.6rem; }
+    .pill { padding: 10px 16px; font-size: 0.8rem; }
+    .primary-btn { padding: 14px; font-size: 0.95rem; }
+    .brand-logo { font-size: 1rem; }
+    .task-input { font-size: 0.78rem; }
+}
+
+@media (max-height: 650px) {
+    .task-label-wrapper { margin-bottom: 0.8rem; }
+    .timer-wrapper { margin-bottom: 0.8rem; }
+    .session-tracker { margin-bottom: 0.8rem; }
+    .mode-pills { margin-bottom: 1.5rem; }
+    .shortcut-hint { display: none; }
 }
 
 /* ================================================================
@@ -194,15 +343,47 @@ body {
     animation: ringGlow 1.2s ease infinite alternate;
 }
 
+.completed .status-label {
+    animation: statusBlink 1.5s ease infinite;
+}
+
 @keyframes completePulse {
     0%   { transform: scale(1); }
-    50%  { transform: scale(1.1); }
+    50%  { transform: scale(1.08); }
     100% { transform: scale(1); }
 }
 
 @keyframes ringGlow {
     0%   { stroke: var(--accent); filter: drop-shadow(0 0 8px rgba(0, 255, 157, 0.3)); }
     100% { stroke: #66ffcc; filter: drop-shadow(0 0 35px rgba(0, 255, 157, 0.9)); }
+}
+
+@keyframes statusBlink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+}
+
+/* ─── State transition: running glow ─── */
+.running .progress-ring {
+    filter: drop-shadow(0 0 12px var(--accent));
+}
+
+.running .time-display {
+    text-shadow: 0 0 20px rgba(255,255,255,0.15);
+}
+
+/* ─── State transition: paused dim ─── */
+.paused .progress-ring {
+    filter: drop-shadow(0 0 3px rgba(255,255,255,0.1));
+}
+
+.paused .time-display {
+    animation: pauseBlink 2s ease infinite;
+}
+
+@keyframes pauseBlink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.5; }
 }
 
 /* ================================================================
@@ -213,8 +394,12 @@ body {
     background: rgba(255,255,255,0.05);
     padding: 5px;
     border-radius: 50px;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     gap: 5px;
+}
+
+[data-theme="minimal-light"] .mode-pills {
+    background: rgba(0,0,0,0.06);
 }
 
 .pill {
@@ -270,7 +455,11 @@ body {
     font-family: var(--font-code);
     box-shadow: var(--glow);
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.3s ease;
+    transition: transform 0.15s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+[data-theme="minimal-light"] .primary-btn {
+    color: #fff;
 }
 
 .primary-btn:hover {
@@ -299,6 +488,10 @@ body {
     transition: border-color 0.3s ease, transform 0.25s ease;
 }
 
+[data-theme="minimal-light"] .secondary-btn {
+    border-color: rgba(0,0,0,0.2);
+}
+
 .secondary-btn:hover {
     border-color: var(--accent);
     transform: rotate(-45deg);
@@ -307,6 +500,33 @@ body {
 .secondary-btn:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+}
+
+/* ================================================================
+   Shortcut Hint Bar
+   ================================================================ */
+.shortcut-hint {
+    margin-top: 2rem;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    text-align: center;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.shortcut-hint span {
+    display: inline-block;
+    background: rgba(255,255,255,0.08);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: var(--font-code);
+    font-size: 0.65rem;
+    margin: 0 2px;
+}
+
+[data-theme="minimal-light"] .shortcut-hint span {
+    background: rgba(0,0,0,0.07);
 }
 
 /* ================================================================
@@ -332,18 +552,20 @@ body {
 }
 
 .modal-content {
-    background: #1a1a1a;
+    background: var(--modal-bg);
     width: 100%;
     max-width: 500px;
     border-radius: 24px 24px 0 0;
     padding: 2rem;
-    border-top: 1px solid #333;
+    border-top: 1px solid var(--border);
     animation: slideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    max-height: 85vh;
+    overflow-y: auto;
 }
 
 @media (min-width: 768px) {
     .modal { align-items: center; }
-    .modal-content { border-radius: 24px; }
+    .modal-content { border-radius: 24px; border-top: none; border: 1px solid var(--border); }
 }
 
 @keyframes slideUp {
@@ -385,7 +607,6 @@ body {
     outline-offset: 2px;
 }
 
-/* --- Form Controls --- */
 .setting-group {
     margin-bottom: 1.5rem;
 }
@@ -402,12 +623,18 @@ body {
     width: 100%;
     padding: 12px;
     background: #000;
-    border: 1px solid #333;
+    border: 1px solid var(--border);
     color: var(--accent);
     border-radius: 8px;
     font-family: var(--font-code);
     font-size: 1rem;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme="minimal-light"] .setting-group input,
+[data-theme="minimal-light"] .setting-group select {
+    background: #f0f0f0;
+    color: #1a1a1a;
 }
 
 .setting-group input:focus,
@@ -421,7 +648,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .setting-row label {
@@ -440,6 +667,11 @@ body {
     font-family: var(--font-ui);
     cursor: pointer;
     transition: background 0.3s ease, color 0.3s ease, transform 0.1s ease;
+}
+
+[data-theme="minimal-light"] .full-btn {
+    background: #e0e0e0;
+    color: #1a1a1a;
 }
 
 .full-btn:hover {
